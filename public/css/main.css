@@ -1,0 +1,23 @@
+th{
+    font-size: 12px;
+}
+
+td{
+    font-size: 10px;
+}
+
+.card{
+    margin-top: 20px;
+    min-height: 90vh;
+    padding: 20px;
+}
+
+.filterbox{
+    max-width: 50%;
+    margin-bottom: 10px;
+}
+
+.filterbox label{
+    color: black;
+    font-size: 14px;
+}
