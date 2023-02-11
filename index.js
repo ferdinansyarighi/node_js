@@ -56,13 +56,45 @@ app.get('/getsales', (req, res) => {
 });
 
 app.get('/gettable', (req, res) => {
-  let sql = "select store_area.area_name, product_brand.brand_name, format(sum(compliance) / count(product_brand.brand_id) * 100,1) percentage\
-  from report_product\
-  left join store on store.store_id = report_product.store_id\
-  left join store_area on store.area_id = store_area.area_id\
-  left join product on product.product_id = report_product.product_id\
-  left join product_brand on product.brand_id = product_brand.brand_id\
-  group by store_area.area_id, product_brand.brand_id;";
+  let sql = "select\
+	  brand_name,\
+	  coalesce(sum(A),0) as 'DKI_jakarta',\
+	  coalesce(sum(B),0) as 'Jawa_Barat',\
+	  coalesce(sum(C),0) as 'Kalimantan',\
+	  coalesce(sum(D),0) as 'Jawa_Tengah',\
+	  coalesce(sum(E),0) as 'Bali'\
+  from pivot\
+  group by brand_name";
+  let query = conn.query(sql, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+});
+
+app.post('/updatetable', (req, res) => {
+  var wr = "1=1";
+  if(req.body.area !== "" && req.body.area !== undefined){
+    wr += " and area_id =" + req.body.area;
+  }
+
+  if(req.body.start_date !== "" && req.body.start_date !== undefined){
+    wr += " and tanggal >= '" + req.body.start_date + "'";
+  }
+
+  if(req.body.end_date !== "" && req.body.end_date !== undefined){
+    wr += " and tanggal <= '" + req.body.end_date + "'";;
+  }
+
+  let sql = "select\
+	  brand_name,\
+	  coalesce(sum(A),0) as 'DKI_jakarta',\
+	  coalesce(sum(B),0) as 'Jawa_Barat',\
+	  coalesce(sum(C),0) as 'Kalimantan',\
+	  coalesce(sum(D),0) as 'Jawa_Tengah',\
+	  coalesce(sum(E),0) as 'Bali'\
+  from pivot\
+  where "+wr+"\
+  group by brand_name";
   let query = conn.query(sql, (err, results) => {
     if (err) throw err;
     res.json(results);

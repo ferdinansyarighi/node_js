@@ -11,7 +11,7 @@
  Target Server Version : 100422 (10.4.22-MariaDB)
  File Encoding         : 65001
 
- Date: 11/02/2023 01:45:08
+ Date: 12/02/2023 00:43:18
 */
 
 SET NAMES utf8mb4;
@@ -432,5 +432,27 @@ INSERT INTO `store_area` VALUES (2, 'Jawa Barat');
 INSERT INTO `store_area` VALUES (3, 'Kalimantan');
 INSERT INTO `store_area` VALUES (4, 'Jawa Tengah');
 INSERT INTO `store_area` VALUES (5, 'Bali');
+
+-- ----------------------------
+-- View structure for pivot
+-- ----------------------------
+DROP VIEW IF EXISTS `pivot`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `pivot` AS (
+	select tbl.*,
+			case when area_name = "DKI jakarta" then percentage end as A,
+			case when area_name = "Jawa Barat" then percentage end as B,
+			case when area_name = "Kalimantan" then percentage end as C,
+			case when area_name = "Jawa Tengah" then percentage end as D,
+			case when area_name = "Bali" then percentage end as E
+	from (
+		select product_brand.brand_name, store_area.area_id, store_area.area_name, format(sum(compliance) / count(product_brand.brand_id) * 100,1) percentage, report_product.tanggal
+		from report_product
+		left join store on store.store_id = report_product.store_id
+		left join store_area on store.area_id = store_area.area_id
+		left join product on product.product_id = report_product.product_id
+		left join product_brand on product.brand_id = product_brand.brand_id
+		group by store_area.area_id, product_brand.brand_id
+	) as tbl
+) ;
 
 SET FOREIGN_KEY_CHECKS = 1;
