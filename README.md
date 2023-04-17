@@ -1,10 +1,11 @@
 # apps
-Bar Chart Apps Using Node Js
+Bar Chart Apps Using Node Js (Express Js)
 
 # setup
 node version : 12.22.12
 npm version : 6.14.16
 db : mysql
+framework : Express Js
 
 # db connection setup
 - execute sql dump provided
