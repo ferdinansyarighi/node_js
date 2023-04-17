@@ -1,5 +1,5 @@
-# graph
-Bar Chart Apps
+# apps
+Bar Chart Apps Using Node Js
 
 # setup
 node version : 12.22.12
